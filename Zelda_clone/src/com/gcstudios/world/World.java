@@ -6,6 +6,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.gcstudios.entities.*;
+import com.gcstudios.main.Game;
+
 public class World {
 
     private Tile[] tiles;
@@ -23,6 +26,7 @@ public class World {
                 for(int yy = 0; yy < map.getHeight(); yy++){
                     int pixelAtual = pixels[xx + (yy*map.getWidth())];
                     
+                    tiles[xx + (yy*WIDTH)] = new FloorTile(xx*16, yy*16, Tile.TILE_FLOOR); 
                     if(pixelAtual == 0xFF000000){
                         //chão
                         tiles[xx + (yy*WIDTH)] = new FloorTile(xx*16, yy*16, Tile.TILE_FLOOR);
@@ -31,10 +35,20 @@ public class World {
                        tiles[xx + (yy*WIDTH)] = new FloorTile(xx*16, yy*16, Tile.TILE_WALL);
                     }else if (pixelAtual == 0xFF0000FF){
                         //Player
-                        tiles[xx + (yy*WIDTH)] = new FloorTile(xx*16, yy*16, Tile.TILE_FLOOR);
-                    }else {
-                        //Chão
-                        tiles[xx + (yy*WIDTH)] = new FloorTile(xx*16, yy*16, Tile.TILE_FLOOR);
+                        Game.player.setX(xx*16); 
+                        Game.player.setY(yy*16);
+                    }else if (pixelAtual == 0xFFFF0000){
+                        //Inimigo
+                        Game.entities.add(new Enemy(xx*16, yy*16, 16, 16, Entity.ENEMY_EN));
+                    }else if(pixelAtual == 0xFFFF9300){
+                        //Arma
+                        Game.entities.add(new Weapon(xx*16, yy*16, 16, 16, Entity.WEAPON_EN));
+                    }else if(pixelAtual == 0xFFFF0071){
+                        //Cura
+                        Game.entities.add(new Lifepack(xx*16, yy*16, 16, 16, Entity.LIFEPACK_EN));
+                    }else if(pixelAtual == 0xFFFFFF00){
+                        //Bala
+                        Game.entities.add(new Bullet(xx*16, yy*16, 16, 16, Entity.BULLET_EN));
                     }
                 }
             }
