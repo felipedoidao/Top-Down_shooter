@@ -17,6 +17,7 @@ public class Ui {
         g.setColor(Color.white);
         g.setFont(new Font("arial", Font.BOLD, 8));
         g.drawString((int)Game.player.life+"/"+(int)Player.maxLife, 22, 11);
+        g.drawString("Munição: " + Game.player.ammo, 13, 21);
     }
 
 }

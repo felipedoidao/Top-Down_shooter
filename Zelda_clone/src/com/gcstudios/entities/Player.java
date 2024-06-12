@@ -22,6 +22,8 @@ public class Player extends Entity{
     private BufferedImage[] rightPlayer;
     private BufferedImage[] leftPlayer;
 
+    public int ammo = 0;
+
     public Player(int x, int y, int width, int height, BufferedImage sprite) {
         super(x, y, width, height, sprite);
 
@@ -69,9 +71,22 @@ public class Player extends Entity{
         }
 
         checkCollisionLifePack();
+        checkCollisionAmmo();
 
         Camera.x = Camera.clamp(this.getX() - (Game.WIDTH/2), 0, World.WIDTH*16 - Game.WIDTH);
         Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT/2), 0, World.HEIGHT*16 - Game.HEIGHT);
+    }
+
+    public void checkCollisionAmmo(){
+        for(int i = 0; i < Game.entities.size(); i++){
+            Entity atual = Game.entities.get(i);
+            if(atual instanceof Bullet){
+                if(Entity.isColiding(this, atual)){
+                    ammo += 10;
+                    Game.entities.remove(atual);
+                }
+            }
+        }
     }
 
     public void checkCollisionLifePack(){
@@ -86,7 +101,6 @@ public class Player extends Entity{
                 }
             }
         }
-
     }
 
     public void render(Graphics g){
