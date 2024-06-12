@@ -17,6 +17,7 @@ import com.gcstudios.entities.Enemy;
 import com.gcstudios.entities.Entity;
 import com.gcstudios.entities.Player;
 import com.gcstudios.graficos.Spritesheet;
+import com.gcstudios.graficos.Ui;
 import com.gcstudios.world.World;
 
 public class Game extends Canvas implements Runnable, KeyListener{
@@ -41,19 +42,22 @@ public class Game extends Canvas implements Runnable, KeyListener{
 
     public static Random rand;
 
+    public Ui ui;
+
     public  Game(){
         rand = new Random();
         addKeyListener(this);
         setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
         initFrame();
         //Inicializando jogo
+        ui = new Ui();
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         entities = new ArrayList<Entity>();
         enemies = new ArrayList<Enemy>();
-        spritesheet = new Spritesheet("/Sprites.png");
+        spritesheet = new Spritesheet("/sprites.png");
         player = new Player(16, 16, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
         entities.add(player);
-        world = new World("/Map.png");
+        world = new World("/map.png");
     }
 
     public void initFrame() {
@@ -109,6 +113,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
             Entity e = entities.get(i);
             e.render(g);
         }
+        ui.render(g);
 
         /***/
         g.dispose();

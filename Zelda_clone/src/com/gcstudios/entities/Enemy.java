@@ -1,31 +1,63 @@
 package com.gcstudios.entities;
 
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.gcstudios.main.Game;
+import com.gcstudios.world.Camera;
 import com.gcstudios.world.World;
 
 public class Enemy extends Entity{
-    private double speed = 1;
+    private double speed = 0.5;
+
+    private int frames = 0, maxFrames = 15,index = 0, maxIndex = 3;
+    private BufferedImage[] sprites;
 
     public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
-        super(x, y, width, height, sprite);
+        super(x, y, width, height, null);
+        sprites = new BufferedImage[4];
+        for(int i=0; i<4; i++){
+            sprites[i] = Game.spritesheet.getSprite(112 + (i*16), 16, 16, 16);
+        }
     }
 
     public void tick(){
-        if((int)x < Game.player.getX() && World.isFree((int)(x+speed), this.getY()) && !isColiding((int)(x+speed), this.getY())){
-            x+=speed;
+        if(isColidingWithPlayer() == false){
+            if((int)x < Game.player.getX() && World.isFree((int)(x+speed), this.getY()) && !isColiding((int)(x+speed), this.getY())){
+                x+=speed;
+            }
+            else if((int)x > Game.player.getX() && World.isFree((int)(x-speed), this.getY()) && !isColiding((int)(x-speed), this.getY())){
+                x-=speed;
+            }
+            if((int)y < Game.player.getY() && World.isFree(this.getX(), (int)(y+speed)) && !isColiding(this.getX(), (int)(y+speed))){
+                y+=speed;
+            }
+            else if((int)y > Game.player.getY() && World.isFree(this.getX(), (int)(y-speed)) && !isColiding(this.getX(), (int)(y-speed))){
+                y-=speed;
+            }
+        }else {
+            if(Game.rand.nextInt(100) < 10){
+                Game.player.life -= Game.rand.nextInt(3);
+            }
+            if(Game.player.life <=0){
+            }
         }
-         else if((int)x > Game.player.getX() && World.isFree((int)(x-speed), this.getY()) && !isColiding((int)(x-speed), this.getY())){
-            x-=speed;
-         }
-        if((int)y < Game.player.getY() && World.isFree(this.getX(), (int)(y+speed)) && !isColiding(this.getX(), (int)(y+speed))){
-            y+=speed;
-        }
-         else if((int)y > Game.player.getY() && World.isFree(this.getX(), (int)(y-speed)) && !isColiding(this.getX(), (int)(y-speed))){
-            y-=speed;
-         }
+        frames++;
+            if(frames >= maxFrames){
+                frames = 0;
+                index++;
+                if(index > maxIndex){
+                    index = 0;
+                }
+            }
+    }
+
+    public boolean isColidingWithPlayer(){
+        Rectangle currentEnemy = new Rectangle(this.getX(), this.getY(), World.TILE_SIZE, World.TILE_SIZE);
+        Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), 16, 16);
+
+        return currentEnemy.intersects(player);
     }
 
     public boolean isColiding(int xnext, int ynext){
@@ -43,6 +75,11 @@ public class Enemy extends Entity{
 
 
         return false;
+    }
+
+    public void render(Graphics g){
+        g.drawImage(sprites[index], this.getX()-Camera.x, this.getY()-Camera.y, null);
+
     }
     
 }
