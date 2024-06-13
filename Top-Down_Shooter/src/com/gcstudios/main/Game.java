@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -16,11 +18,12 @@ import javax.swing.JFrame;
 import com.gcstudios.entities.Enemy;
 import com.gcstudios.entities.Entity;
 import com.gcstudios.entities.Player;
+import com.gcstudios.entities.Shoot;
 import com.gcstudios.graficos.Spritesheet;
 import com.gcstudios.graficos.Ui;
 import com.gcstudios.world.World;
 
-public class Game extends Canvas implements Runnable, KeyListener{
+public class Game extends Canvas implements Runnable, KeyListener, MouseListener{
 
     private static final long serialVersionUID = 1L;
     public static JFrame frame;
@@ -34,6 +37,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
 
     public static List<Entity> entities;
     public static List<Enemy> enemies;
+    public static List<Shoot> bullets;
+
     public static Spritesheet spritesheet;
 
     public static World world;
@@ -47,6 +52,7 @@ public class Game extends Canvas implements Runnable, KeyListener{
     public  Game(){
         rand = new Random();
         addKeyListener(this);
+        addMouseListener(this);
         setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
         initFrame();
         //Inicializando jogo
@@ -54,6 +60,8 @@ public class Game extends Canvas implements Runnable, KeyListener{
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         entities = new ArrayList<Entity>();
         enemies = new ArrayList<Enemy>();
+        bullets = new ArrayList<Shoot>();
+
         spritesheet = new Spritesheet("/sprites.png");
         player = new Player(16, 16, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
         entities.add(player);
@@ -95,6 +103,9 @@ public class Game extends Canvas implements Runnable, KeyListener{
             Entity e = entities.get(i);
             e.tick();
         }
+        for(int i = 0; i < bullets.size(); i++){
+            bullets.get(i).tick();
+        }
     }
 
     public void render(){
@@ -112,6 +123,9 @@ public class Game extends Canvas implements Runnable, KeyListener{
         for(int i = 0; i < entities.size(); i++){
             Entity e = entities.get(i);
             e.render(g);
+        }
+        for(int i = 0; i < bullets.size(); i++){
+            bullets.get(i).render(g);
         }
         ui.render(g);
 
@@ -173,6 +187,10 @@ public class Game extends Canvas implements Runnable, KeyListener{
         else if(e.getKeyCode() == KeyEvent.VK_S){
             player.down = true;
         }
+
+        if(e.getKeyCode() == KeyEvent.VK_X){
+            player.shoot = true;
+        }
     }
 
     @Override
@@ -190,5 +208,31 @@ public class Game extends Canvas implements Runnable, KeyListener{
         else if(e.getKeyCode() == KeyEvent.VK_S){
             player.down = false;
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        player.mouseShoot = true;
+        player.mx = (e.getX()/3);
+        player.my = (e.getY()/3);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 }

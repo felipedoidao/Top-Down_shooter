@@ -41,8 +41,6 @@ public class Enemy extends Entity{
                 Game.player.life -= Game.rand.nextInt(3);
                 Game.player.isDamaged = true;
             }
-            if(Game.player.life <=0){
-            }
         }
         frames++;
             if(frames >= maxFrames){

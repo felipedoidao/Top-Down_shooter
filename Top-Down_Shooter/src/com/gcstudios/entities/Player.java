@@ -2,7 +2,9 @@ package com.gcstudios.entities;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
+import com.gcstudios.graficos.Spritesheet;
 import com.gcstudios.main.Game;
 import com.gcstudios.world.Camera;
 import com.gcstudios.world.World;
@@ -16,6 +18,7 @@ public class Player extends Entity{
 
     public double life = 100;
     public static double maxLife = 100;
+    public int mx, my;
     
     private int frames = 0, maxFrames = 5,index = 0, maxIndex = 3;
     private boolean moved = false;
@@ -26,6 +29,11 @@ public class Player extends Entity{
 
     public boolean isDamaged = false;
     private int damageFrames = 0;
+
+    public boolean shoot = false;
+    public boolean mouseShoot = false;
+
+    private boolean arma = false;
 
     public int ammo = 0;
 
@@ -46,15 +54,19 @@ public class Player extends Entity{
 
     public void tick(){
         moved = false;
-        if(right && World.isFree((int)(x+speed), this.getY())){
-            moved = true;
+        if(right){
             dir = right_dir;
-            x+=speed;
+            if(World.isFree((int)(x+speed), this.getY())){
+                moved = true;
+                x+=speed;
+            }
         }
-        else if(left && World.isFree((int)(x-speed), this.getY())){
-            moved = true;
+        else if(left){
             dir = left_dir;
-            x-=speed;
+            if(World.isFree((int)(x-speed), this.getY())){
+                moved = true;
+                x-=speed;
+            } 
         }
         if(up && World.isFree(this.getX(), (int)(y-speed))){
             moved = true;
@@ -84,11 +96,76 @@ public class Player extends Entity{
             }
         }
 
+       /*  if(shoot){
+            shoot = false;
+            if(ammo > 0 && arma){
+                ammo --;
+            int dx = 0;
+            int px = 24;
+            int py = 0;
+            if(dir == right_dir){
+                px = 18;
+                dx = 1;
+            }else{
+                px = -8;
+                dx = -1;
+            }
+            Shoot shoot = new Shoot(this.getX() + px, this.getY() + py, 6, 6, null, dx, 0);
+            Game.bullets.add(shoot);
+            }
+        }*/
+
+        if(mouseShoot){
+            mouseShoot = false;
+            if(ammo > 0 && arma){
+                ammo --;
+                double angle = Math.atan2(my - (this.getY()+8 - Camera.y), mx - (this.getX()+8 - Camera.x));
+
+                double dx = Math.cos(angle);
+                double dy = Math.sin(angle);
+                int px = 0;
+                int py = 0;
+                if(dir == right_dir){
+                    px = 18;
+                }else{
+                    px = -8;
+                }
+            
+                Shoot shoot = new Shoot(this.getX() + px, this.getY() + py, 6, 6, null, dx, dy);
+                Game.bullets.add(shoot);
+            }
+        }
+
+        if(life <=0){
+            Game.entities.clear();
+            Game.enemies.clear();
+            Game.entities = new ArrayList<Entity>();
+            Game.enemies = new ArrayList<Enemy>();
+            Game.spritesheet = new Spritesheet("/Sprites.png");
+            Game.player = new Player(0, 0, 16, 16, Game.spritesheet.getSprite(32, 0, 16, 16));
+            Game.entities.add(Game.player);
+            Game.world = new World("/Map.png");
+            return;
+        }
+
         checkCollisionLifePack();
         checkCollisionAmmo();
+        checkCollisionGun();
 
         Camera.x = Camera.clamp(this.getX() - (Game.WIDTH/2), 0, World.WIDTH*16 - Game.WIDTH);
         Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT/2), 0, World.HEIGHT*16 - Game.HEIGHT);
+    }
+
+    public void checkCollisionGun(){
+        for(int i = 0; i < Game.entities.size(); i++){
+            Entity atual = Game.entities.get(i);
+            if(atual instanceof Weapon){
+                if(Entity.isColiding(this, atual)){
+                    arma = true;
+                    Game.entities.remove(atual);
+                }
+            }
+        }
     }
 
     public void checkCollisionAmmo(){
@@ -121,8 +198,14 @@ public class Player extends Entity{
         if(!isDamaged){
             if(dir == right_dir){
                 g.drawImage(rightPlayer[index], this.getX() - Camera.x , this.getY() - Camera.y , null);
+                if(arma){
+                    g.drawImage(GUN_RIGHT, this.getX() + 8 - Camera.x, this.getY() - Camera.y, null);
+                }
             }else if(dir == left_dir){
                 g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+                if(arma){
+                    g.drawImage(GUN_LEFT, this.getX() - 8 - Camera.x, this.getY() - Camera.y, null);
+                }
             }
         }else{
             g.drawImage(playerDamage, this.getX() - Camera.x, this.getY() - Camera.y, null);
