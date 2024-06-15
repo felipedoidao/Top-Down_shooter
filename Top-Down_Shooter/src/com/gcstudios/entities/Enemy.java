@@ -11,6 +11,8 @@ import com.gcstudios.world.World;
 public class Enemy extends Entity{
     private double speed = 0.5;
 
+    private int life = 10;
+
     private int frames = 0, maxFrames = 15,index = 0, maxIndex = 3;
     private BufferedImage[] sprites;
 
@@ -50,6 +52,22 @@ public class Enemy extends Entity{
                     index = 0;
                 }
             }
+
+            collidingBullet();
+            if(life <= 0){
+                Game.entities.remove(this);
+            }
+    }
+
+    public void collidingBullet(){
+        for(int i = 0; i < Game.bullets.size(); i++){
+            Entity e = Game.bullets.get(i);
+            if(Entity.isColiding(this, e)){
+                life--;
+                Game.bullets.remove(i);
+                return;
+            }
+        }
     }
 
     public boolean isColidingWithPlayer(){

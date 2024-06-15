@@ -119,10 +119,7 @@ public class Player extends Entity{
             mouseShoot = false;
             if(ammo > 0 && arma){
                 ammo --;
-                double angle = Math.atan2(my - (this.getY()+8 - Camera.y), mx - (this.getX()+8 - Camera.x));
-
-                double dx = Math.cos(angle);
-                double dy = Math.sin(angle);
+                
                 int px = 0;
                 int py = 0;
                 if(dir == right_dir){
@@ -130,6 +127,11 @@ public class Player extends Entity{
                 }else{
                     px = -8;
                 }
+
+                double angle = Math.atan2(my - (this.getY() - Camera.y), mx - (this.getX()+px - Camera.x));
+
+                double dx = Math.cos(angle);
+                double dy = Math.sin(angle);
             
                 Shoot shoot = new Shoot(this.getX() + px, this.getY() + py, 6, 6, null, dx, dy);
                 Game.bullets.add(shoot);
@@ -173,7 +175,7 @@ public class Player extends Entity{
             Entity atual = Game.entities.get(i);
             if(atual instanceof Bullet){
                 if(Entity.isColiding(this, atual)){
-                    ammo += 10;
+                    ammo += 1000;
                     Game.entities.remove(atual);
                 }
             }
