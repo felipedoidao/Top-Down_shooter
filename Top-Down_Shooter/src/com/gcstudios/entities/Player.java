@@ -2,9 +2,7 @@ package com.gcstudios.entities;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
-import com.gcstudios.graficos.Spritesheet;
 import com.gcstudios.main.Game;
 import com.gcstudios.world.Camera;
 import com.gcstudios.world.World;
@@ -139,15 +137,8 @@ public class Player extends Entity{
         }
 
         if(life <=0){
-            Game.entities.clear();
-            Game.enemies.clear();
-            Game.entities = new ArrayList<Entity>();
-            Game.enemies = new ArrayList<Enemy>();
-            Game.spritesheet = new Spritesheet("/Sprites.png");
-            Game.player = new Player(0, 0, 16, 16, Game.spritesheet.getSprite(32, 0, 16, 16));
-            Game.entities.add(Game.player);
-            Game.world = new World("/Map.png");
-            return;
+            life = 0;
+            Game.gameState = "GAME_OVER";
         }
 
         checkCollisionLifePack();
@@ -211,6 +202,13 @@ public class Player extends Entity{
             }
         }else{
             g.drawImage(playerDamage, this.getX() - Camera.x, this.getY() - Camera.y, null);
+            if(arma){
+                if(dir == right_dir){
+                    g.drawImage(GUN_RIGHT, this.getX() + 8 - Camera.x, this.getY() - Camera.y, null);
+                }else{
+                    g.drawImage(GUN_LEFT, this.getX() - 8 - Camera.x, this.getY() - Camera.y, null);
+                }
+            }
         }
     }
     
