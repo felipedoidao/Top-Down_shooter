@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import com.gcstudios.main.Game;
+import com.gcstudios.main.Sound.Clips;
 import com.gcstudios.world.Camera;
 import com.gcstudios.world.World;
 
@@ -75,6 +76,7 @@ public class Enemy extends Entity{
         for(int i = 0; i < Game.bullets.size(); i++){
             Entity e = Game.bullets.get(i);
             if(Entity.isColiding(this, e)){
+                Clips.hurt.play();
                 isDamaged = true;
                 life--;
                 Game.bullets.remove(i);

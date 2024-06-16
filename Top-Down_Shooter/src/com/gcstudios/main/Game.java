@@ -110,6 +110,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     }
 
     public void tick(){
+        player.updateCamera();
         if(gameState == "NORMAL"){
             for(int i = 0; i < entities.size(); i++){
                 Entity e = entities.get(i);
