@@ -40,7 +40,7 @@ public class Sound {
             clips[p].loop(300);
         }
 
-        public static Clips music = load("/music.wav", 1);
+        public static Clips music = load("/musica.wav", 1);
         public static Clips hurt = load("/hurt.wav", 1);
 
         private static Clips load(String name, int count){

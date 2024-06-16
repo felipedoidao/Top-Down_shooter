@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import com.gcstudios.main.Game;
+import com.gcstudios.main.Sound.Clips;
 import com.gcstudios.world.Camera;
 import com.gcstudios.world.World;
 
@@ -205,6 +206,7 @@ public class Player extends Entity{
                 }
             }
         }else{
+            Clips.hurt.play();
             g.drawImage(playerDamage, this.getX() - Camera.x, this.getY() - Camera.y, null);
             if(arma){
                 if(dir == right_dir){
