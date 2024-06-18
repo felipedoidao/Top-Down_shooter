@@ -1,9 +1,14 @@
 package com.gcstudios.entities;
 
 import java.awt.Graphics;
+
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
+import com.gcstudios.world.Node;
+import com.gcstudios.world.Vector2i;
+import com.gcstudios.world.World;
 import com.gcstudios.main.Game;
 import com.gcstudios.world.Camera;
 
@@ -21,6 +26,8 @@ public class Entity {
     protected double y;
     protected int width;
     protected int height;
+
+    protected List<Node> path;
 
     private int maskx, masky, maskw, maskh;
 
@@ -72,6 +79,53 @@ public class Entity {
 
     public void tick(){
         
+    }
+
+    public void followPath(List<Node> path){
+
+        if(path != null){
+            if(path.size() > 0){
+                Vector2i target = path.get(path.size() - 1).tile;
+
+                if(x < target.x *16 && !isColiding(this.getX() + 1, this.getY())){
+                    x++;
+
+                }else if(x > target.x *16 && !isColiding(this.getX() - 1, this.getY())) {
+                    x--;
+
+                }
+
+                if(y < target.y *16 && !isColiding(this.getX(), this.getY() + 1)){
+                    y++;
+
+                }else if(y > target.y * 16 && !isColiding(this.getX(), this.getY() - 1)){ 
+                    y--;
+
+                }
+
+                if(x == target.x *16 && y == target.y * 16){
+                    path.remove(path.size() - 1);
+                }
+            }
+        }
+    }
+
+    public boolean isColiding(int xnext, int ynext){
+        Rectangle enemyCurrent = new Rectangle(xnext, ynext, World.TILE_SIZE, World.TILE_SIZE);
+        for(int i = 0; i < Game.enemies.size(); i++){
+            Enemy e = Game.enemies.get(i);
+            if(e == this)
+                continue;
+
+            Rectangle targetEnemy = new Rectangle(e.getX(), e.getY(), World.TILE_SIZE, World.TILE_SIZE);
+            if(enemyCurrent.intersects(targetEnemy)){
+                if(Game.rand.nextInt(100) < 50)
+                return true;
+            }
+        }
+
+
+        return false;
     }
 
     public static boolean isColiding(Entity e1, Entity e2){

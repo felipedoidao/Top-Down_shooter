@@ -23,7 +23,6 @@ import com.gcstudios.entities.Player;
 import com.gcstudios.entities.Shoot;
 import com.gcstudios.graficos.Spritesheet;
 import com.gcstudios.graficos.Ui;
-import com.gcstudios.main.Sound.Clips;
 import com.gcstudios.world.World;
 
 public class Game extends Canvas implements Runnable, KeyListener, MouseListener{
@@ -111,7 +110,7 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
     }
 
     public void tick(){
-        Clips.music.loop();
+        //Clips.music.loop();
         player.updateCamera();
         if(gameState == "NORMAL"){
             for(int i = 0; i < entities.size(); i++){

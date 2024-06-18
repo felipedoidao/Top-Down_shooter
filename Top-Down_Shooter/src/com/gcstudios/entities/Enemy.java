@@ -6,11 +6,13 @@ import java.awt.image.BufferedImage;
 
 import com.gcstudios.main.Game;
 import com.gcstudios.main.Sound.Clips;
+import com.gcstudios.world.AStar;
 import com.gcstudios.world.Camera;
+import com.gcstudios.world.Vector2i;
 import com.gcstudios.world.World;
 
 public class Enemy extends Entity{
-    private double speed = 0.5;
+    //private double speed = 0.5;
 
     private int life = 10;
 
@@ -29,6 +31,7 @@ public class Enemy extends Entity{
     }
 
     public void tick(){
+        /* 
         if(isColidingWithPlayer() == false){
             if((int)x < Game.player.getX() && World.isFree((int)(x+speed), this.getY()) && !isColiding((int)(x+speed), this.getY())){
                 x+=speed;
@@ -48,6 +51,20 @@ public class Enemy extends Entity{
                 Game.player.isDamaged = true;
             }
         }
+            */
+        if(!isColidingWithPlayer()){
+            if(path == null || path.size() == 0){
+                Vector2i start = new Vector2i((int)(x/16), (int)(y/16));
+                Vector2i end = new Vector2i((int)(Game.player.x/16), (int)(Game.player.y/16));
+                path = AStar.findPath(Game.world, start, end);
+            }
+        }else {
+            if(Game.rand.nextInt(100) < 10){
+                Game.player.life -= Game.rand.nextInt(3);
+                Game.player.isDamaged = true;
+            }
+        }
+            followPath(path);
         frames++;
             if(frames >= maxFrames){
                 frames = 0;
@@ -90,23 +107,6 @@ public class Enemy extends Entity{
         Rectangle player = new Rectangle(Game.player.getX(), Game.player.getY(), 16, 16);
 
         return currentEnemy.intersects(player);
-    }
-
-    public boolean isColiding(int xnext, int ynext){
-        Rectangle enemyCurrent = new Rectangle(xnext, ynext, World.TILE_SIZE, World.TILE_SIZE);
-        for(int i = 0; i < Game.enemies.size(); i++){
-            Enemy e = Game.enemies.get(i);
-            if(e == this)
-                continue;
-
-            Rectangle targetEnemy = new Rectangle(e.getX(), e.getY(), World.TILE_SIZE, World.TILE_SIZE);
-            if(enemyCurrent.intersects(targetEnemy)){
-                return true;
-            }
-        }
-
-
-        return false;
     }
 
     public void render(Graphics g){

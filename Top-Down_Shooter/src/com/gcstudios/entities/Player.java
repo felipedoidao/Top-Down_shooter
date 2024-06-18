@@ -95,25 +95,6 @@ public class Player extends Entity{
             }
         }
 
-       /*  if(shoot){
-            shoot = false;
-            if(ammo > 0 && arma){
-                ammo --;
-            int dx = 0;
-            int px = 24;
-            int py = 0;
-            if(dir == right_dir){
-                px = 18;
-                dx = 1;
-            }else{
-                px = -8;
-                dx = -1;
-            }
-            Shoot shoot = new Shoot(this.getX() + px, this.getY() + py, 6, 6, null, dx, 0);
-            Game.bullets.add(shoot);
-            }
-        }*/
-
         if(mouseShoot){
             mouseShoot = false;
             if(ammo > 0 && arma){
