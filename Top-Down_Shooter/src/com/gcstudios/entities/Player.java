@@ -13,7 +13,7 @@ public class Player extends Entity{
     public boolean right,up,left,down;
     public int right_dir = 0, left_dir = 1;
     public int dir = right_dir;
-    public double speed = 1.4;
+    public int speed = 1;
 
     public double life = 100;
     public static double maxLife = 100;
@@ -55,23 +55,23 @@ public class Player extends Entity{
         moved = false;
         if(right){
             dir = right_dir;
-            if(World.isFree((int)(x+speed), this.getY())){
+            if(World.isFree((this.getX()+(int)this.speed), this.getY())){
                 moved = true;
                 x+=speed;
             }
         }
         else if(left){
             dir = left_dir;
-            if(World.isFree((int)(x-speed), this.getY())){
+            if(World.isFree((this.getX()-(int)this.speed), this.getY())){
                 moved = true;
                 x-=speed;
             } 
         }
-        if(up && World.isFree(this.getX(), (int)(y-speed))){
+        if(up && World.isFree(this.getX(), (this.getY()-(int)this.speed))){
             moved = true;
             y-=speed;
         }
-        else if(down && World.isFree(this.getX(), (int)(y+speed))){
+        else if(down && World.isFree(this.getX(), (this.getY()+(int)this.speed))){
             moved = true;
             y+=speed;
         }
@@ -152,7 +152,7 @@ public class Player extends Entity{
             Entity atual = Game.entities.get(i);
             if(atual instanceof Bullet){
                 if(Entity.isColiding(this, atual)){
-                    ammo += 1000;
+                    ammo += 20;
                     Game.entities.remove(atual);
                 }
             }
@@ -187,7 +187,7 @@ public class Player extends Entity{
                 }
             }
         }else{
-            Clips.hurt.play();
+           Clips.hurt.play();
             g.drawImage(playerDamage, this.getX() - Camera.x, this.getY() - Camera.y, null);
             if(arma){
                 if(dir == right_dir){
