@@ -197,7 +197,6 @@ public class Game extends Canvas implements Runnable, KeyListener, MouseListener
         }
         bs.show();
         
-        
     }
 
     public void run() {
