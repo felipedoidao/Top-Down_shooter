@@ -88,18 +88,18 @@ public class Entity {
                 Vector2i target = path.get(path.size() - 1).tile;
 
                 if(x < target.x *16 && !isColiding(this.getX() + 1, this.getY())){
-                    x++;
+                    x += 1;
 
                 }else if(x > target.x *16 && !isColiding(this.getX() - 1, this.getY())) {
-                    x--;
+                    x -= 1;
 
                 }
 
                 if(y < target.y *16 && !isColiding(this.getX(), this.getY() + 1)){
-                    y++;
+                    y += 1;
 
                 }else if(y > target.y * 16 && !isColiding(this.getX(), this.getY() - 1)){ 
-                    y--;
+                    y -= 1;
 
                 }
 

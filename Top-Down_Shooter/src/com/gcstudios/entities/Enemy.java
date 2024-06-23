@@ -12,7 +12,6 @@ import com.gcstudios.world.Vector2i;
 import com.gcstudios.world.World;
 
 public class Enemy extends Entity{
-    //private double speed = 0.5;
 
     private int life = 10;
 
@@ -93,6 +92,7 @@ public class Enemy extends Entity{
         for(int i = 0; i < Game.bullets.size(); i++){
             Entity e = Game.bullets.get(i);
             if(Entity.isColiding(this, e)){
+                Clips.hurt.setVolume(0.1f);
                 Clips.hurt.play();
                 isDamaged = true;
                 life--;
